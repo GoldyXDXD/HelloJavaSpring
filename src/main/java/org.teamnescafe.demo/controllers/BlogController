@@ -1,4 +1,4 @@
-package com.nickbor.demo.controllers;
+package org.teamnescafe.demo.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
