@@ -8,14 +8,13 @@
 <body>
 <header th:insert="blocks/header :: header">
 </header>
-<p th:text="'Привет, чел!'" />
 
 <div class="container mt-5">
     <h1>Мб здесь будут обновления проекта</h1>
     <div th:each="el : ${posts}" class="alert alert-info mt-2">
         <h3 th:text="${el.title}"/>
         <p th:text="${el.announce}"/>
-        <a th:href="'/blog/' + ${el.id}" class="btn btn-warning">Подробнее</a>
+        <a th:href="'/news/' + ${el.id}" class="btn btn-warning">Подробнее</a>
     </div>
 </div>
 
