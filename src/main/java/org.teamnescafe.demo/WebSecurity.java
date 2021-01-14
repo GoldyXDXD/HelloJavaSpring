@@ -11,18 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("mazafak")
-                .password("pass")
-                .roles("ADMIN")
-                .and()
-                .withUser("Nick")
-                .password("root")
-                .roles("USER");
-    }
-
+    @Autowired
+    private DataSource dataSource;
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -33,8 +24,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .and().formLogin();
     }
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return NoOpPasswordEncoder.getInstance();
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(NoOpPasswordEncoder.getInstance())
+                .usersByUsernameQuery("select username, password, active from usr where username=?") //не доделано
     }
 }
