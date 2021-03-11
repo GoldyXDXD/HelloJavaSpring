@@ -30,3 +30,5 @@ public class RegistrationController {
         return "redirect:/login";
     }
 }
+
+//этот модуль уйдет в помойку
