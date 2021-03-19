@@ -1,34 +1,44 @@
-package com.nickbor.demo.controllers;
+package org.teamnescafe.demo.controllers;
 
-import com.nickbor.demo.models.Role;
-import com.nickbor.demo.models.User;
-import com.nickbor.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.Collections;
+import org.teamnescafe.demo.UserService;
+import org.teamnescafe.demo.entities.User;
+import org.springframework.validation.Validator;
 
 @Controller
 public class RegistrationController {
+
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @GetMapping("/registration")
     public String registration(Model model) {
+        model.addAttribute("userForm", new User());
+
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String addUser(User user, Model model) {
-        User userFromDb = userRepository.findbyUsername(user.getUsername());
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-        userRepository.save(user);
-        return "redirect:/login";
+    public String addUser(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
+        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())){
+            model.addAttribute("passwordError", "Пароли не совпадают");
+            return "registration";
+        }
+        if (!userService.saveUser(userForm)){
+            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
+            return "registration";
+        }
+
+        return "redirect:/";
     }
 }
-
-//этот модуль уйдет в помойку
